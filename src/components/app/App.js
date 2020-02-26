@@ -21,6 +21,7 @@ const App = () => {
   return (
     <ErrorBoundry>
       <div className="row">
+        {/* {console.log(allPokemons)} */}
         {allPokemons.map(pokemon => {
           return (
 

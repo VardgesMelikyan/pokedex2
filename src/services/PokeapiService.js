@@ -1,7 +1,7 @@
 import { Component } from 'react'
 
 export default class PokeapiService extends Component {
-    _apiBase = 'http://pokeapi.salestock.net/api/v2';
+    _apiBase = 'https://pokeapi.co/api/v2';
     _imgBase = `https://img.pokemondb.net/artwork/large`
     getResourse = async (url) => {
         let res = await fetch(`${this._apiBase}${url}`);
@@ -12,8 +12,10 @@ export default class PokeapiService extends Component {
     }
 
     getAllPokemons = async () => {
-        let res = await this.getResourse(`/pokemon`);
-        return res.results.map((pokemon) => { return this.getPokemon(pokemon.name) });
+        let res = await this.getResourse(`/pokemon/`)
+        let data = await res.results.map(async (pokemon) => { return await this.getPokemon(pokemon.name) });
+        console.log(data)
+        return data
     }
     getPokemon = async (id) => {
         const pokemon = await this.getResourse(`/pokemon/${id}/`);
@@ -25,8 +27,14 @@ export default class PokeapiService extends Component {
     }
     _transformPokemon = (pokemon) => {
         return {
-            id: this._extractId(pokemon.url),
+            id: pokemon.id,
             name: pokemon.name,
+            abilities: pokemon.abilities,
+            moves: pokemon.moves,
+            stats: pokemon.stats,
+            types: pokemon.types,
+            weight: pokemon.weight,
+            height: pokemon.height,
             img: this.getPokemonImage(pokemon.name)
         }
     }

@@ -12,15 +12,36 @@ export default class PokeapiService extends Component {
     }
 
     getAllPokemons = async () => {
-        let res = await this.getResourse(`/pokemon/`)
-        let data = await res.results.map(async (pokemon) => { return await this.getPokemon(pokemon.name) });
-        console.log(data)
-        return data
-    }
+        return new Promise(async (resolve, reject) => {
+            let res = await this.getResourse(/pokemon/);
+            let data = await res.results.map(pokemon => {
+                return this.getPokemon(pokemon.name);
+            });
+            Promise.all(data)
+                .then(res => resolve(res))
+                .catch(err => console.log(err));
+        });
+    };
     getPokemon = async (id) => {
         const pokemon = await this.getResourse(`/pokemon/${id}/`);
         return this._transformPokemon(pokemon)
     }
+
+    getAllAbilities = async (data) => {
+        return new Promise(async (resolve, reject) => {
+            let abilities = await data.map(ability => {
+                return this.getAbility(this._extractId(ability.ability.url))
+            });
+            Promise.all(abilities)
+                .then(res => resolve(res))
+                .catch(err => console.log(err));
+        })
+    }
+    getAbility = async (id) => {
+        const ability = await this.getResourse(`/ability/${id}/`);
+        return this._transformAbility(ability)
+    }
+
     _extractId(item) {
         const idRegExp = /\/([0-9]*)\/$/;
         return item.match(idRegExp)[1]
@@ -29,13 +50,20 @@ export default class PokeapiService extends Component {
         return {
             id: pokemon.id,
             name: pokemon.name,
-            abilities: pokemon.abilities,
+            abilities: this.getAllAbilities(pokemon.abilities),
             moves: pokemon.moves,
             stats: pokemon.stats,
             types: pokemon.types,
             weight: pokemon.weight,
             height: pokemon.height,
             img: this.getPokemonImage(pokemon.name)
+        }
+    }
+    _transformAbility = (ability) => {
+        return {
+            id: ability.id,
+            name: ability.name,
+            effect_entries: ability.effect_entries
         }
     }
     getPokemonImage = (name) => {

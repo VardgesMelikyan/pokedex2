@@ -42,21 +42,58 @@ export default class PokeapiService extends Component {
         return this._transformAbility(ability)
     }
 
+    getAllTypesList = async () => {
+        let res = await this.getResourse(/type/);
+        return res.results
+
+    }
+
+    getAllTypes = async (data, label = null) => {
+        return new Promise(async (resolve, reject) => {
+            let types = await data.map(type => {
+                return (
+                    this.getType(
+                        !label ?
+                            this._extractId(type.type.url)
+                            :
+                            label
+                    )
+                );
+            });
+            Promise.all(types)
+                .then(res => resolve(res))
+                .catch(err => console.log(err));
+        })
+    }
+    getType = async (id) => {
+        const type = await this.getResourse(`/type/${id}/`);
+        return this._transformType(type)
+    }
+
     _extractId(item) {
         const idRegExp = /\/([0-9]*)\/$/;
         return item.match(idRegExp)[1]
     }
-    _transformPokemon = (pokemon) => {
+    _transformPokemon = async (pokemon) => {
         return {
             id: pokemon.id,
             name: pokemon.name,
-            abilities: this.getAllAbilities(pokemon.abilities),
+            abilities: await this.getAllAbilities(pokemon.abilities),
             moves: pokemon.moves,
             stats: pokemon.stats,
-            types: pokemon.types,
+            types: await this.getAllTypes(pokemon.types),
             weight: pokemon.weight,
             height: pokemon.height,
             img: this.getPokemonImage(pokemon.name)
+        }
+    }
+    _transformType = async (type) => {
+        return {
+            id: type.id,
+            name: type.name,
+            damage_relations: type.damage_relations,
+            move_damage_class: type.move_damage_class,
+            pokemon: type.pokemon
         }
     }
     _transformAbility = (ability) => {

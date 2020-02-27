@@ -1,38 +1,43 @@
-import React, { useState, useEffect } from 'react';
-import PokeapiService from '../../services/PokeapiService'
-import Loading from '../loading'
+import React from 'react';
 import ErrorBoundry from '../error-boundry'
-
-const PokemonList = () => {
-    const [allPokemons, setAllPokemons] = useState([])
-    const pokeapiService = new PokeapiService()
-    const { getAllPokemons, getAllAbilities } = pokeapiService
-    useEffect((allPokemons) => {
-        async function fetchData() {
-            const res = await getAllPokemons()
-            console.log(res)
-            setAllPokemons(res)
-        }
-        fetchData()
-    }, [])
-    if (!allPokemons) {
-        return <h1><Loading /></h1>
-    }
+import { MDBTooltip, MDBContainer, MDBBtn } from "mdbreact";
+import { Link } from 'react-router-dom'
+const PokemonList = (pokemon) => {
     return (
         <ErrorBoundry>
             <div className="row">
-                {allPokemons.map(pokemon => {
+                {pokemon.pokemon.map(pokemon => {
                     return (
                         <div className="col-sm-3 d-flex align-items-stretch p-3" key={pokemon.id}>
-                            <div className="card p-3" style={{ width: "100%" }}>
-                                <img className="card-img-top" style={{ height: "300px" }} src={`${pokemon.img}`} alt={`${pokemon.img}`} />
+                            <div className="card p-3 w-100">
+                                <img className="card-img-top h-50" src={`${pokemon.img}`} alt={`${pokemon.img}`} />
                                 <span>№ {pokemon.id}</span>
                                 <div className="card-body" >
-                                    <h3 className="card-title text-center text-uppercase"> <a href={`/${pokemon.name}`}>{pokemon.name}</a></h3>
-                                    <div className={" d-flex justify-content-center"}>
+                                    <h3 className="card-title text-center text-uppercase">
+                                        <Link className="nav-link" to={`/pokemon/${pokemon.name}/`}>{pokemon.name}</Link>
+                                    </h3>
+                                    <hr />
+                                    <h6 className="text-center">Pokemon Type</h6>
+                                    <div className=" d-flex justify-content-center">
                                         {pokemon.types.map(type => {
                                             return (
-                                                <div className={'m-3 p-1 rounded w-35 bg-success'} key={type.type.name}> {type.type.name}</div>
+                                                <Link className="m-3 p-1 rounded w-35 bg-success text-light nav-link" to={`/type/${type.name}/`} key={type.id}>{type.name}</Link>
+                                            );
+                                        })}
+                                    </div>
+                                    <hr />
+                                    <h6 className="text-center">Pokemon Abilities</h6>
+                                    <div className=" d-flex justify-content-center">
+                                        {pokemon.abilities.map(ability => {
+                                            return (
+                                                <div key={ability.id}>
+                                                    <MDBContainer className="text-center p-1 rounded w-35">
+                                                        <MDBTooltip placement="top">
+                                                            <MDBBtn>{ability.name}</MDBBtn>
+                                                            <div>{ability.effect_entries[0].short_effect}</div>
+                                                        </MDBTooltip>
+                                                    </MDBContainer>
+                                                </div>
                                             );
                                         })}
                                     </div>

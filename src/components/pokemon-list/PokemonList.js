@@ -1,6 +1,6 @@
 import React from 'react';
 import ErrorBoundry from '../error-boundry'
-import { MDBTooltip, MDBContainer, MDBBtn } from "mdbreact";
+import Tooltip from '../tooltip/tooltip'
 import { Link } from 'react-router-dom'
 const PokemonList = (pokemon) => {
     return (
@@ -31,12 +31,7 @@ const PokemonList = (pokemon) => {
                                         {pokemon.abilities.map(ability => {
                                             return (
                                                 <div key={ability.id}>
-                                                    <MDBContainer className="text-center p-1 rounded w-35">
-                                                        <MDBTooltip placement="top">
-                                                            <MDBBtn>{ability.name}</MDBBtn>
-                                                            <div>{ability.effect_entries[0].short_effect}</div>
-                                                        </MDBTooltip>
-                                                    </MDBContainer>
+                                                    <Tooltip data={ability.effect_entries[0].short_effect} label={ability.name} />
                                                 </div>
                                             );
                                         })}

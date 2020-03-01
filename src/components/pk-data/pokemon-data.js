@@ -1,22 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import PokeapiService from '../../services/PokeapiService'
-import PokemonList from '../pokemon-list'
 import Loading from '../loading'
-const PokemonData = () => {
-    const [allPokemons, setAllPokemons] = useState([])
-    const { getAllPokemons } = new PokeapiService()
-    useEffect((allPokemons) => {
+import SinglePokemon from '../single-pokemon';
+const PokemonData = (pokemon) => {
+    const [singlePokemon, setSinglePokemon] = useState([])
+    const { getPokemon } = new PokeapiService()
+    useEffect((singlePokemon) => {
         async function fetchData() {
-            const res = await getAllPokemons()
-            setAllPokemons(res)
+            const res = await getPokemon(pokemon.pokemon)
+            setSinglePokemon(res)
         }
         fetchData()
     }, [])
-    if (!allPokemons || allPokemons.length == 0) {
+    if (!singlePokemon || singlePokemon.length == 0) {
         return <Loading />
     }
     return (
-        <PokemonList pokemon={allPokemons} />
+        <SinglePokemon pokemon={singlePokemon} />
     );
 }
 export default PokemonData

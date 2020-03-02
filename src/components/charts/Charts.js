@@ -12,7 +12,7 @@ export default class Charts extends PureComponent {
             res.push({ subject: state.stat.name, A: state.base_stat })
         })
         return (
-            <RadarChart cx={300} cy={250} outerRadius={150} width={500} height={450} data={res}>
+            <RadarChart cx={300} cy={250} outerRadius={150} width={800} height={450} data={res}>
                 <PolarGrid />
                 <PolarAngleAxis dataKey="subject" />
                 <PolarRadiusAxis />

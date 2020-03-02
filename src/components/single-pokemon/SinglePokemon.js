@@ -4,7 +4,6 @@ import PTabs from '../tabs/Tabs';
 
 const SinglePokemon = (props) => {
     const { pokemon } = props
-    console.log(pokemon)
     return (
         <div className="container">
             <div className="row">
@@ -19,10 +18,9 @@ const SinglePokemon = (props) => {
                 <div className="card col-md-4 mt-5">
                     <img className="card-img-top" src={pokemon.img} alt={pokemon.img} />
                     <div className="card-body">
-                        <p className="card-text text-capitalize text-center">{pokemon.name}</p>
+                        <h6 className="card-text text-capitalize text-center">{pokemon.name}</h6>
                         <div>
-                            <h4>Abilities</h4>
-                            <PTabs stats={pokemon.abilities} />
+                            <PTabs abilities={pokemon.abilities} types={pokemon.types} />
                         </div>
                     </div>
                 </div>
